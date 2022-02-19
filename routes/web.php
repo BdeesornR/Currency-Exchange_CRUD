@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,8 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('contents.welcome');
+Route::get('/', 'UserController@showLogin');
+
+Route::get('/register', 'UserController@showRegister')->name('show-register');
+Route::post('/register', 'UserController@register')->name('register');
+
+Route::get('/login', 'UserController@showLogin')->name('show-login');
+Route::post('/login', 'UserController@login')->name('login');
+
+Route::middleware('auth:sanctum')->group(function() {
+    Route::get('/user', 'UserController@showUser')->name('show-user');
+    Route::get('/market', 'UserController@showMarket')->name('show-market');
+    Route::get('/history', 'UserController@showHistory')->name('show-history');
 });
-
-
