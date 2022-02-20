@@ -22,8 +22,11 @@ Route::post('/register', 'UserController@register')->name('register');
 Route::get('/login', 'UserController@showLogin')->name('show-login');
 Route::post('/login', 'UserController@login')->name('login');
 
+Route::post('/logout', 'UserController@logout')->name('logout');
+
 Route::middleware('auth:sanctum')->group(function() {
-    Route::get('/user', 'UserController@showUser')->name('show-user');
-    Route::get('/market', 'UserController@showMarket')->name('show-market');
-    Route::get('/history', 'UserController@showHistory')->name('show-history');
+    Route::get('/user', 'ProfileController@showProfile')->name('show-profile');
+    Route::get('/market', 'MarketController@showMarket')->name('show-market');
+    Route::post('/market', 'MarketController@makeTrade')->name('trade');
+    Route::get('/history', 'HistoryController@showHistory')->name('show-history');
 });

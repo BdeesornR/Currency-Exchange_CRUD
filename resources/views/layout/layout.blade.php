@@ -24,8 +24,31 @@
         </style>
     </head>
     <body class="antialiased">
+        <div class="container">
+            <div class="row my-3 ms-auto me-0 justify-content-between bg-light">
+                @if ( Auth::check() )
+                    <div class="col-6 d-flex text-start">
+                        <a class="nav-link" href="{{ route('show-profile') }}">Profile</a>
+                        <a class="nav-link" href="{{ route('show-history') }}">History</a>
+                        <a class="nav-link" href="{{ route('show-market') }}">Market</a>
+                    </div>
+                    <div class="col-2 text-end">
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-danger">Logout</button>
+                        </form>
+                    </div>
+                @else
+                    <div class="col-1"></div>
+                    <div class="col-4 d-flex justify-content-end">
+                        <a class="nav-link" href="{{ route('show-login') }}">Login</a>
+                        <a class="nav-link" href="{{ route('show-register') }}">Register</a>
+                    </div>
+                @endif
+            </div>
 
-        @yield('content');
-
+            @yield('content')
+            
+        </div>
     </body>
 </html>

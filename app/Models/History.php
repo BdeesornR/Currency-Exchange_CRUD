@@ -13,13 +13,14 @@ class History extends Model
     protected $fillable = [
         'type',
         'consumer_id',
-        'currency_fiat',
         'currency_crypto',
+        'quantity',
+        'currency_fiat',
         'price',
     ];
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'issuer_id', 'id');
+        return $this->belongsTo(User::class);
     }
 }
