@@ -12,7 +12,7 @@ class History extends Model
 
     protected $fillable = [
         'type',
-        'consumer_id',
+        'associated_id',
         'currency_crypto',
         'quantity',
         'currency_fiat',

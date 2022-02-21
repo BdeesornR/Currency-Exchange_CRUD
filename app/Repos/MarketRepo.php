@@ -19,8 +19,14 @@ class MarketRepo
         return $this->market->findOrFail($id);
     }
 
-    public function getAllListed(): Collection
+    public function getAllListed(int $id): Collection
     {
-        return $this->market->orderBy('created_at', 'asc')->get();
+        return $this->market->where('user_id', '!=', $id)->orderBy('created_at', 'asc')->get();
+    }
+
+    public function closeShop(int $id): void
+    {
+        $shop = $this->findOrFail($id);
+        $shop->delete();
     }
 }

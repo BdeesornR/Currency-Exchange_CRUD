@@ -12,55 +12,37 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th class="text-center">Advertisers</th>
-                            <th class="text-center">Price</th>
-                            <th class="text-center">Available</th>
-                            <th class="text-center">Trade</th>
+                            <th class="text-center align-middle">Advertisers</th>
+                            <th class="text-center align-middle">Currency</th>
+                            <th class="text-center align-middle">Type</th>
+                            <th class="text-center align-middle">Price</th>
+                            <th class="text-center align-middle">Available</th>
+                            <th class="text-center align-middle">Trade</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @for ($i = 0; $i < $shops->count(); $i++)
+                        @foreach ($shops as $shop)
+                            <div style="display: none">{{ $index = $loop->index }}</div>
                             <tr>
-                                <td class="text-center">{{ $issuerData[$i]->issuerName }}</td>
-                                <td class="text-center">{{ $shops[$i]->currency_fiat." ".$shops[$i]->price }}</td>
-                                <td class="text-center">{{ $shops[$i]->currency_crypto." ".$issuerData[$i]->quantity }}</td>
-                                <td class="text-center"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Trade</button></td>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLongTitle">Trade</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form id="tradeForm" action="{{ route('trade', ['shopId' => $shops[$i]]) }}" method="POST">
-                                                            @csrf
-                                                            <div class="row">
-                                                                <div class="col-4">
-                                                                    <label class="col-4" for="tradeQuantity">Buy/Sell</label>
-                                                                    <div class="col-2">{{ $shops[$i]->currency_crypto }}</div>
-                                                                    <input class="col-6" type="number" id="tradeQuantity" name="tradeQuantity" max="{{ min($consumerData[$i]->quantity, $issuerData[$i]->quantity) }}" />
-                                                                </div>
-                                                                <div class="col-2">Available</div>
-                                                                <div class="col-2">{{ $shop[$i]->currency_crypto." ".min($consumerData[$i]->quantity, $issuerData[$i]->quantity) }}</div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                        <button type="submit" form="tradeForm" class="btn btn-primary">Trade</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <td class="text-center align-middle">{{ $issuerData[$index]['name'] }}</td>
+                                <td class="text-center align-middle text-uppercase">{{ $shop->currency_crypto }}</td>
+                                <td class="text-center align-middle">{{ $shop->type }}</td>
+                                <td class="text-center align-middle text-uppercase">{{ $shop->currency_fiat." ".$shop->price }}</td>
+                                <td class="text-center align-middle">{{ $issuerData[$index]['quantity'] }}</td>
+                                <td class="text-center align-middle">
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-primary" 
+                                        id="tradeBtn"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#tradeModal" 
+                                        data-shopId="{{ $shop->id }}"
+                                        data-currencyFiat="{{ $shop->currency_fiat }}"
+                                        data-availableFiat="{{ min($consumerData[$index]['quantityFiat'], $issuerData[$index]['quantityFiat']) }}"
+                                    >Trade</button>
+                                </td>
                             </tr>
-                        @endfor
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -68,4 +50,10 @@
     </div>
 </div>
 
+
+
 @endsection
+
+@push('scripts')
+    <script src="{{ mix('js/market.js') }}" type="application/javascript"></script>
+@endpush

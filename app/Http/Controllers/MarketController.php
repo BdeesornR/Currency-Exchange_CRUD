@@ -34,9 +34,10 @@ class MarketController extends Controller
 
     public function showMarket(): View
     {
-        $wallet = $this->walletRepo->getUserWallet();
+        $user = Auth::user();
 
-        $shops = $this->marketRepo->getAllListed();
+        $wallet = $this->walletRepo->getUserWallet();
+        $shops = $this->marketRepo->getAllListed($user->id);
 
         $issuerData = $this->marketService->getIssuerWallet($shops);
         $consumerData = $this->marketService->getConsumerBalance($shops, $wallet);
@@ -44,15 +45,28 @@ class MarketController extends Controller
         return view('contents.market', ['shops' => $shops, 'issuerData' => $issuerData, 'consumerData' => $consumerData]);
     }
 
-    public function makeTrade(Market $shop, Request $request): RedirectResponse
+    public function makeTrade(Request $request): RedirectResponse
     {
+        $shop = $this->marketRepo->findOrFail($request->input('shop'));
+
         $consumer = Auth::user();
         $quantity = $request->input('tradeQuantity');
+        $availableFiat = $request->input('maxFiat');
+
+        if ($quantity > $availableFiat) {
+            $quantity = $availableFiat;
+        }
 
         DB::transaction(function () use ($shop, $consumer, $quantity) {
             $this->historyRepo->createRecord($shop, $consumer, $quantity);
             $this->walletRepo->updateWallet($shop, $consumer, $quantity);
         });
+
+        $issuer = $shop->wallet()->first();
+
+        if ($issuer->{$shop->currency_fiat} <= 0.1 || $issuer->{$shop->currency_crypto} <= 0.000001) {
+            $this->marketRepo->closeShop($shop->id);
+        }
 
         return redirect(route('show-profile', ['user' => $consumer]));
     }

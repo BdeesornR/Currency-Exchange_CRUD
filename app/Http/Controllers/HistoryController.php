@@ -26,8 +26,8 @@ class HistoryController extends Controller
 
         $histories = $this->historyRepo->getAllByUserId($user);
 
-        $histories->each(function ($history, $index) use ($associatedName) {
-            $associatedName->push($this->userRepo->getConsumerNameByID($history->consumer_id));
+        $histories->each(function ($history) use ($associatedName) {
+            $associatedName->push($this->userRepo->getConsumerNameByID($history->associated_id));
         });
 
         return view('contents.history', ['histories' => $histories, 'associatedName' => $associatedName]);

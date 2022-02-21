@@ -12,25 +12,25 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th class="text-center">Buyer/Seller ID</th>
-                            <th class="text-center">Buyer/Seller Name</th>
-                            <th class="text-center">Transaction Type</th>
-                            <th class="text-center">Crypto Currency</th>
-                            <th class="text-center">Quantity</th>
-                            <th class="text-center">Base Currency</th>
-                            <th class="text-center">Price</th>
+                            <th class="text-center align-middle">Buyer/Seller ID</th>
+                            <th class="text-center align-middle">Buyer/Seller Name</th>
+                            <th class="text-center align-middle">Transaction Type</th>
+                            <th class="text-center align-middle">Crypto Currency</th>
+                            <th class="text-center align-middle">Quantity</th>
+                            <th class="text-center align-middle">Base Currency</th>
+                            <th class="text-center align-middle">Price</th>
                         </tr>
                     </thead>
                     <tbody>
                         @for ($i = 0; $i < $histories->count(); $i++)
                             <tr>
-                                <td class="text-center">{{ $histories[$i]->associated_id }}</td>
-                                <td class="text-center">{{ $associatedName[$i] }}</td>
-                                <td class="text-center">{{ $histories[$i]->type }}</td>
-                                <td class="text-center">{{ $histories[$i]->currency_crypto }}</td>
-                                <td class="text-center">{{ $histories[$i]->quantity }}</td>
-                                <td class="text-center">{{ $histories[$i]->currency_fiat }}</td>
-                                <td class="text-center">{{ $histories[$i]->price }}</td>
+                                <td class="text-center align-middle">{{ $histories[$i]->associated_id }}</td>
+                                <td class="text-center align-middle">{{ $associatedName[$i] }}</td>
+                                <td class="text-center align-middle">{{ $histories[$i]->type }}</td>
+                                <td class="text-center align-middle text-uppercase">{{ $histories[$i]->currency_crypto }}</td>
+                                <td class="text-center align-middle">{{ $histories[$i]->quantity }}</td>
+                                <td class="text-center align-middle text-uppercase">{{ $histories[$i]->currency_fiat }}</td>
+                                <td class="text-center align-middle">{{ $histories[$i]->price }}</td>
                             </tr>
                         @endfor
                     </tbody>

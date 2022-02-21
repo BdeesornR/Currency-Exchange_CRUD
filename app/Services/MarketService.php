@@ -18,11 +18,11 @@ class MarketService
         $this->walletRepo = $walletRepo;
     }
 
-    public function getIssuerWallet(Collection $shops): SupportCollection
+    public function getIssuerWallet(Collection $shops): array
     {
-        $issuerData = collect();
+        $issuerData = [];
 
-        $shops->each(function ($shop) use ($issuerData) {
+        $shops->each(function ($shop) use (&$issuerData) {
             $issuerName = $shop->user->name;
             $issuerWallet = $shop->wallet;
             $balanceFiat = $issuerWallet[$shop->currency_fiat];
@@ -30,35 +30,37 @@ class MarketService
 
             if ($shop->type === 'buy') {
                 $quantity = $balanceFiat / $shop->price;
+                $quantityFiat = $balanceFiat;
             } else if ($shop->type === 'sell') {
                 $quantity = $balanceCrypto;
+                $quantityFiat = $shop->price * $balanceCrypto;
             } else {
                 throw new Exception('Transaction Type violation');
             }
 
-            $issuerData->push(['name' => $issuerName, 'quantity' => $quantity]);
+            array_push($issuerData, ['name' => $issuerName, 'quantity' => $quantity, 'quantityFiat' => $quantityFiat]);
         });
 
         return $issuerData;
     }
 
-    public function getConsumerBalance(Collection $shops, Wallet $consumerWallet): SupportCollection
+    public function getConsumerBalance(Collection $shops, Wallet $consumerWallet): array
     {
-        $consumerData = collect();
+        $consumerData = [];
 
-        $shops->each(function ($shop) use ($consumerData, $consumerWallet) {
+        $shops->each(function ($shop) use (&$consumerData, $consumerWallet) {
             $balanceFiat = $consumerWallet[$shop->currency_fiat];
             $balanceCrypto = $consumerWallet[$shop->currency_crypto];
 
             if ($shop->type === 'buy') {
-                $quantity = $balanceCrypto;
+                $quantityFiat = $shop->price * $balanceCrypto;
             } else if ($shop->type === 'sell') {
-                $quantity = $balanceFiat / $shop->price;
+                $quantityFiat = $balanceFiat;
             } else {
                 throw new Exception('Transaction Type violation');
             }
 
-            $consumerData->push(['quantity' => $quantity]);
+            array_push($consumerData, ['quantityFiat' => $quantityFiat]);
         });
 
         return $consumerData;
